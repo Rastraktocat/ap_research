@@ -1,13 +1,12 @@
 const std = @import("std");
 
-var Node = struct {
-
-	value: type,
+const Node = struct {
+	value,
 	next: ?*@This(),
 
 };
 
-pub fn linked_list(T: type, allocator: std.mem.Allocator) Node {
+pub fn linked_list(T: type) type {
 
 	return struct {
 		value: T,
@@ -38,14 +37,14 @@ pub fn linked_list(T: type, allocator: std.mem.Allocator) Node {
 
 			var node = *@This();
 			prev_node.set_next(node.get_next());
-			try allocator.free(node);
+			try allocator.destory(node);
 
 		} // del_node()
 
 		fn add_node(prev_node: *@This(), add_node_value: T) void {
 			
 			var node = *@This();
-			var addition_node: T = try allocator.alloc(node, @sizeOf(node));
+			var addition_node: T = try allocator.create(node, @sizeOf(node));
 			
 			prev_node.set_next(*node);
 
@@ -77,7 +76,7 @@ pub fn main() !void {
 	defer _ = gpa.deinit();
 	const allocator = gpa.allocator();
 
-	_ = linked_list(i32, allocator);
+	_ = linked_list(i32);
 	
 	
 
